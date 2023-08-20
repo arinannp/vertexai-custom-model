@@ -1,0 +1,69 @@
+steps:
+  # Building VertexAI Docker Image
+  - id: building-docker-image
+    name: 'gcr.io/cloud-builders/docker'
+    dir: vertex-ai
+    args: ['build', '-t', 'asia-southeast2-docker.pkg.dev/ps-int-datateamrnd-22072022/vertexai-pipeline/vertexai-template:latest', '.']
+
+  # Deploying VertexAI Image to Artifact Registry
+  - id: deploying-docker-image-to-artifact-registry
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia-southeast2-docker.pkg.dev/ps-int-datateamrnd-22072022/vertexai-pipeline/vertexai-template:latest']
+
+  # Running VertexAI Container from Artifact Registry
+  - id: running-container-from-artifact-registry
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['run', '-t', 'asia-southeast2-docker.pkg.dev/ps-int-datateamrnd-22072022/vertexai-pipeline/vertexai-template:latest']
+
+
+  # Building VertexAI Docker Image
+  - id: building-docker-image-custom-sklearn
+    name: 'gcr.io/cloud-builders/docker'
+    dir: vertex-ai-custom-model-package
+    args: ['build', '-t', 'asia-southeast2-docker.pkg.dev/ps-int-datateamrnd-22072022/vertexai-custom-sklearn/custom-sklearn-model:latest', './churn-ml-scikitlearn']
+
+  # Deploying VertexAI Image to Artifact Registry
+  - id: deploying-docker-image-to-artifact-registry-sklearn
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia-southeast2-docker.pkg.dev/ps-int-datateamrnd-22072022/vertexai-custom-sklearn/custom-sklearn-model:latest']
+
+  # Running VertexAI Container from Artifact Registry
+  - id: running-container-from-artifact-registry-sklearn
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['run', '-t', 'asia-southeast2-docker.pkg.dev/ps-int-datateamrnd-22072022/vertexai-custom-sklearn/custom-sklearn-model:latest']
+
+
+  # Building VertexAI Docker Image
+  - id: building-docker-image-custom-xgboost
+    name: 'gcr.io/cloud-builders/docker'
+    dir: vertex-ai-custom-model-package
+    args: ['build', '-t', 'asia-southeast2-docker.pkg.dev/ps-int-datateamrnd-22072022/vertexai-custom-xgboost/custom-xgboost-model:latest', './churn-ml-xgboost']
+
+  # Deploying VertexAI Image to Artifact Registry
+  - id: deploying-docker-image-to-artifact-registry-xgboost
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia-southeast2-docker.pkg.dev/ps-int-datateamrnd-22072022/vertexai-custom-xgboost/custom-xgboost-model:latest']
+
+  # Running VertexAI Container from Artifact Registry
+  - id: running-container-from-artifact-registry-xgboost
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['run', '-t', 'asia-southeast2-docker.pkg.dev/ps-int-datateamrnd-22072022/vertexai-custom-xgboost/custom-xgboost-model:latest']
+
+
+  # Deploying Cloud Function
+  - id: deploying-cloud-function
+    name: google/cloud-sdk
+    dir: cloud-function
+    args: ['gcloud', 'beta', 'functions', 'deploy', 'trigger-vertexai-pipeline',
+           '--memory', '512MB',
+           '--runtime', 'python38',
+           '--timeout', '60s',
+           '--region', 'asia-southeast2',
+           '--service-account', 'vertexai-pipeline-sa@ps-int-datateamrnd-22072022.iam.gserviceaccount.com',
+           '--ingress-settings', 'all', '--allow-unauthenticated', '--entry-point', 'retrain_churn_model',
+           '--trigger-event', 'google.storage.object.finalize', '--trigger-resource', 'gs://bucket-vertexai-pipeline-artifacts', 
+           '--env-vars-file=env-variables/list_of_env_var.yaml']
+
+images: ['asia-southeast2-docker.pkg.dev/ps-int-datateamrnd-22072022/vertexai-pipeline/vertexai-template:latest']
+options:
+  logging: CLOUD_LOGGING_ONLY

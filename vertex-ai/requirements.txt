@@ -1,0 +1,11 @@
+# Function dependencies, for example:
+# package>=version
+pandas==2.0.3
+numpy==1.20.3
+fsspec==2023.6.0
+gcsfs==2023.6.0
+kfp==2.0.0
+google-cloud-pipeline-components==2.0.0
+google-cloud-storage==2.10.0
+google-cloud-aiplatform==1.27.1
+google-cloud-aiplatform[pipelines]

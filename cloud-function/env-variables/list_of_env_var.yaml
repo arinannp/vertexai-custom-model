@@ -1,0 +1,8 @@
+project_id: ps-int-datateamrnd-22072022
+project_region: asia-southeast2
+raw_dataset_path_scikitlearn: POC_BANK/prebuilt-container/churn-scikitlearn/raw-dataset/
+raw_dataset_path_xgboost: POC_BANK/prebuilt-container/churn-xgboost/raw-dataset/
+test_dataset_path: gs://bucket-vertexai-pipeline-artifacts/POC_BANK/train_dataset_clean/Customer-Churn-Records-2.csv
+pipeline_root_path: gs://bucket-vertexai-pipeline-artifacts/PIPELINE_ROOT_3
+kubeflow_template_path: gs://bucket-vertexai-pipeline-artifacts/PIPELINE_ROOT_3/bank-churn-pipeline.json
+sa_user_email: vertexai-pipeline-sa@ps-int-datateamrnd-22072022.iam.gserviceaccount.com
